@@ -13,16 +13,16 @@ const connectHTMLElems = () => {
 
     viewElems.searchInput = getDOMElem('searchInput');
     viewElems.searchButton = getDOMElem('searchButton');
-    viewElems.searchButton = getDOMElem('weatherCityContainer');
+    viewElems.weatherCityContainer = getDOMElem('weatherCityContainer');
 
-    viewElems.searchButton = getDOMElem('weatherCity');
-    viewElems.searchButton = getDOMElem('weatherIcon');
+    viewElems.weatherCity = getDOMElem('weatherCity');
+    viewElems.weatherIcon = getDOMElem('weatherIcon');
 
-    viewElems.searchButton = getDOMElem('weatherCurrentTemp');
-    viewElems.searchButton = getDOMElem('weatherMaxTemp');
-    viewElems.searchButton = getDOMElem('weatherMinTemp');
+    viewElems.weatherCurrentTemp = getDOMElem('weatherCurrentTemp');
+    viewElems.weatherMaxTemp = getDOMElem('weatherMaxTemp');
+    viewElems.weatherMinTemp = getDOMElem('weatherMinTemp');
 
-    viewElems.searchButton = getDOMElem('returnToSearchBtn');
+    viewElems.returnToSearchBtn = getDOMElem('returnToSearchBtn');
 }
 
 const setupListeners = () => {
@@ -36,25 +36,41 @@ const initilizeApp = () => {
     setupListeners();
 }
 
-const onClickSubmit = event => {
-    let query = viewElems.searchInput.value;
-    getWeatherByCity(query).then(data => {
-        console.log(data);
-        switchView();
-    });
-};
-
 const onEnterSubmit = event => {    
     if (event.key === 'Enter') {
         fadeInOut();
         let query = viewElems.searchInput.value;
         getWeatherByCity(query).then(data => {
-            console.log(data);
-            switchView();
-            fadeInOut();
+            displayWeatherData(data);
         });
     }
 };
+
+const onClickSubmit = event => {
+    fadeInOut();
+    let query = viewElems.searchInput.value;
+    getWeatherByCity(query).then(data => {
+        displayWeatherData(data);
+    });
+};
+
+const displayWeatherData = data => {
+    switchView();
+    fadeInOut();
+
+    const weather = data.consolidated_weather[0];
+    viewElems.weatherCity.innerText = data.title;
+    viewElems.weatherIcon.src = `https://www.metaweather.com/static/img/weather/${weather.weather_state_abbr}.svg`;
+    viewElems.weatherIcon.alt = weather.weather_state_name;
+
+    const currentTemp = weather.the_temp.toFixed(2);
+    const maxTemp = weather.max_temp.toFixed(2);
+    const minTemp = weather.min_temp.toFixed(2);
+
+    viewElems.weatherCurrentTemp.innerText = `Current temperature: ${currentTemp}°C`;
+    viewElems.weatherMaxTemp.innerText = `Max temperature: ${maxTemp}°C`;
+    viewElems.weatherMinTemp.innerText = `Min temperature: ${minTemp}°C`;
+}
 
 const fadeInOut = () => {
     if (viewElems.mainContainer.style.opacity === '1' || viewElems.mainContainer.style.opacity === '') {
@@ -80,7 +96,7 @@ const returnToSearch = () => {
     setTimeout(() => {
         switchView();
         fadeInOut();
-    }, 500),
+    }, 500)
 }
 
 document.addEventListener('DOMContentLoaded', initilizeApp)
