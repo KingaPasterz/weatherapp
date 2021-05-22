@@ -42,9 +42,9 @@ const onEnterSubmit = event => {
         let query = viewElems.searchInput.value;
         getWeatherByCity(query).then(data => {
             displayWeatherData(data);
-        });
+        })
     }
-};
+}
 
 const onClickSubmit = event => {
     fadeInOut();
@@ -52,7 +52,7 @@ const onClickSubmit = event => {
     getWeatherByCity(query).then(data => {
         displayWeatherData(data);
     });
-};
+}
 
 const displayWeatherData = data => {
     switchView();
@@ -96,7 +96,7 @@ const returnToSearch = () => {
     setTimeout(() => {
         switchView();
         fadeInOut();
-    }, 500)
+    }, 500);
 }
 
-document.addEventListener('DOMContentLoaded', initilizeApp)
+document.addEventListener('DOMContentLoaded', initilizeApp);
