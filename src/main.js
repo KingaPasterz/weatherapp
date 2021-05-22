@@ -27,7 +27,8 @@ const connectHTMLElems = () => {
 
 const setupListeners = () => {
     viewElems.searchInput.addEventListener('keydown', onEnterSubmit);
-    viewElems.searchButton.addEventListener('klick', onClickSubmit);
+    viewElems.searchButton.addEventListener('click', onClickSubmit);
+    viewElems.returnToSearchBtn.addEventListener('click', returnToSearch);
 }
 
 const initilizeApp = () => {
@@ -35,15 +36,51 @@ const initilizeApp = () => {
     setupListeners();
 }
 
-const onClickSubmit = () => {};
+const onClickSubmit = event => {
+    let query = viewElems.searchInput.value;
+    getWeatherByCity(query).then(data => {
+        console.log(data);
+        switchView();
+    });
+};
 
 const onEnterSubmit = event => {    
     if (event.key === 'Enter') {
+        fadeInOut();
         let query = viewElems.searchInput.value;
         getWeatherByCity(query).then(data => {
             console.log(data);
+            switchView();
+            fadeInOut();
         });
     }
 };
+
+const fadeInOut = () => {
+    if (viewElems.mainContainer.style.opacity === '1' || viewElems.mainContainer.style.opacity === '') {
+        viewElems.mainContainer.style.opacity = '0';
+    } else {
+        viewElems.mainContainer.style.opacity = '1';
+    }
+}
+
+const switchView = () => {
+    if (viewElems.weatherSearchView.style.display != 'none') {
+        viewElems.weatherSearchView.style.display = 'none';
+        viewElems.weatherForecastView.style.display = 'block';
+    } else {
+        viewElems.weatherForecastView.style.display = 'none';
+        viewElems.weatherSearchView.style.display = 'flex';
+    }
+}
+
+const returnToSearch = () => {
+    fadeInOut();
+
+    setTimeout(() => {
+        switchView();
+        fadeInOut();
+    }, 500),
+}
 
 document.addEventListener('DOMContentLoaded', initilizeApp)
